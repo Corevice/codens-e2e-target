@@ -12,11 +12,12 @@ def health():
 
 @app.route("/calculate")
 def calculate():
-    # Intentional bug: division by zero when no query param
     from flask import request
     a = int(request.args.get("a", 10))
-    b = int(request.args.get("b", 0))
-    result = a / b  # Bug: b defaults to 0
+    b = int(request.args.get("b", 1))
+    if b == 0:
+        return jsonify({"error": "b must not be zero"}), 400
+    result = a / b
     return jsonify({"result": result})
 
 if __name__ == "__main__":
