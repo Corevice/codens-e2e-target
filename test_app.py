@@ -21,7 +21,15 @@ def test_calculate_valid(client):
     assert response.status_code == 200
     assert response.json["result"] == 5.0
 
+def test_calculate_divide_by_zero(client):
+    """Division by zero must return HTTP 400 with error message."""
+    response = client.get("/calculate?a=10&b=0")
+    assert response.status_code == 400
+    assert "error" in response.json
+    assert response.json["error"] == "division by zero"
+
 def test_calculate_default_params(client):
-    """This test WILL FAIL due to the intentional division by zero bug"""
+    """Default params (b=0) should return 400, not 500."""
     response = client.get("/calculate")
-    assert response.status_code == 200
+    assert response.status_code == 400
+    assert "error" in response.json
